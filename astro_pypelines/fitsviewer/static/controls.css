@@ -1,0 +1,193 @@
+.ui-dialog-titlebar{
+    font-size:12px;
+}
+.controlPanel{
+    /*width:95%;*/
+}
+.scaleInput{
+    width:70px;
+    font-size:18px;
+    vertical-align:bottom;
+    text-align:center;
+    float:left;
+    margin:4px 1px 2px 1px;
+}
+.frameInput{
+    width:40px;
+    font-size:18px;
+    vertical-align:bottom;
+    text-align:center;
+    float:left;
+    margin:4px 1px 2px 1px;
+}
+.smallButton{
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:80%;
+    cursor:pointer;
+    border:none;
+    width:23px;
+    height:23px;
+    border-radius: 7px 7px 7px 7px;
+    vertical-align:bottom;
+    float:left;
+    margin:2px 1px 2px 1px;
+}
+.coordDiv{
+    float:left;
+    width:160px;
+}
+.zoom{
+    background-color:#99CCFF;
+}
+.zoom:active
+{   
+    background-color:#7AA3CC;
+}
+.scaleInputDiv{
+    float:left;
+}
+.zoomOut{
+    background-image:url(button_icons/zoom_out.png);
+}
+.zoomIn{
+    background-image:url(button_icons/zoom_in.png);
+}
+.bestfit{
+    background-image:url(button_icons/bestfit.png);
+}
+.fullsize{
+    background-image:url(button_icons/fullsize.png);
+}
+.loader{
+    background-color:#82FF82;
+}
+.loader:active{
+    background-color:#B2B26B;
+}
+.addImage{
+    background-image:url(button_icons/newfile.png);
+}
+.addMosaic{
+    background-image:url(button_icons/mosaic.png);
+}
+.firstFrame{
+    background-image:url(button_icons/first.png);
+}
+.previousFrame{
+    background-image:url(button_icons/previous.png);
+}
+.nextFrame{
+    background-image:url(button_icons/next.png);
+}
+.lastFrame{
+    background-image:url(button_icons/last.png);
+}
+.viewerFrame{
+    background-color:#C299EB;
+}
+.viewerFrame:active;{
+    background-color:#6600CC;
+}
+.addFrame{
+    background-image:url(button_icons/add_frame.png);
+}
+.removeFrame{
+    background-image:url(button_icons/delete_frame.png);
+}
+.catalog{
+    background-color:#FF3333;
+}
+.catalog:active{
+    background-color:#FF0000;
+}
+.addCatalog{
+    background-image:url(button_icons/catalog.png);
+}
+.addStar{
+    background-image:url(button_icons/addstar.png);
+}
+.removeStar{
+    background-image:url(button_icons/deletestar.png);
+}
+.catalog-visibility{
+    background-position:center;
+    background-repeat:no-repeat;
+    background-size:80%;
+    cursor:pointer;
+}
+.catalog-visible{
+    background-image:url(button_icons/visible.png);
+}
+.catalog-invisible{
+    background-image:url(button_icons/invisible.png);
+}
+.viewer{
+    background-color:#DEDEDE;
+}
+.viewer:active;{
+    background-color:#AAAAAA;
+}
+.panImage{
+    background-image:url(button_icons/hand.png);
+}
+.resize{
+    background-image:url(button_icons/rectangle.png);
+}
+.centerImage{
+    background-image:url(button_icons/center.png);
+}
+.colormapArea{
+    background-image:url(button_icons/colormap.png);
+}
+.hist{
+    background-image:url(button_icons/histogram.png);
+}
+.radial{
+    background-image:url(button_icons/radialplot.png);
+}
+.surface{
+    background-image:url(button_icons/surface.png);
+}
+.primaryHeader{
+    background-image:url(button_icons/header_icon.jog);
+}
+.colorpad{
+    float:left;
+    cursor:pointer;
+}
+.colorbar{
+    float:left;
+}
+#colorbarMin{
+    float:left;
+}
+#colorbarMax{
+    float:right;
+}
+.colorInput{
+    width:50px;
+}
+.headerBtn{
+    float:left;
+    cursor:pointer;
+    border-radius: 6px 6px 6px 6px;
+    margin:2px 1px 2px 1px;
+    padding:2px 1px 2px 5px;
+    text-align:center;
+    background: -webkit-radial-gradient(#EFFBFB,#088A85); /* Safari 5.1 to 6.0 */
+    background: -o-radial-gradient(#EFFBFB,#088A85); /* For Opera 11.6 to 12.0 */
+    background: -moz-radial-gradient(#EFFBFB,#088A85); /* For Firefox 3.6 to 15 */
+    background: radial-gradient(#EFFBFB,#088A85); /* Standard syntax */
+}
+.collapsible{
+    cursor:pointer;
+}
+#cat-changes-div{
+    background-color:#EEEEEE;
+    height:100px;
+    overflow:scroll;
+}
+.full-spectrum .sp-palette{
+    max-width:200px;
+}

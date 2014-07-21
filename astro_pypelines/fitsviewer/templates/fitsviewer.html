@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>Fits Viewer</title>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script src="static/jquery-2.1.0.min.js" type="text/javascript"></script>
+        <script src="static/astropyp.js" type="text/javascript"></script>
+        <script src="fitsviewer/static/fitsviewer.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div>
+            <div id="mainViewer" class="fitsviewer" width=100% height=100%>
+            <div id="ctrl-panel"/>
+            <div id="div-logger">
+                <textarea id="logger" disabled></textarea>
+            </div>
+        </div>
+        <script>
+        //This is for the surface plotting tool
+        // It woud be nice to replace this with a routine that
+        // doesn't require an internet connection like the google visualization api does
+        google.load("visualization", "1");
+        
+        //TODO: Show tables in jquery dialogs instead of new window and delete following line
+        var tblParams={};
+        console.log('host',window.location);
+        window.onload=function(){
+            mainViewer=Astropyp.Pypelines.Fitsviewer.load({
+                options:{
+                    id:"mainViewer",
+                    logger:new Astropyp.Utils.Logger(document.getElementById("logger")),
+                    multiCanvas:Astropyp.Utils.initMultiCanvas($('#mainViewer'),{
+                        width:Math.round(window.innerWidth),
+                        height:Math.round(window.innerHeight)
+                    })
+                }
+            });
+        }
+        </script>
+    </body>
+</html>
