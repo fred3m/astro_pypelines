@@ -52,7 +52,7 @@ Astropyp.Pypelines.Fitsviewer.dependencies={
         wait:true
     },
     catalog:{
-        url:'catalog/static/catalog.js',
+        url:'photometry/static/catalog.js',
         isloaded:'Astropyp.Pypelines.Catalog',
         wait:true
     },

@@ -13,7 +13,7 @@ from astroquery.vizier import Vizier
 from photutils.detection.lacosmic import lacosmic
 from photutils import CircularAperture, CircularAnnulus, aperture_photometry
 
-from . import detect_sources
+from .detect_sources import findStars
 
 catalog_info = {
     'SDSS': {
@@ -149,7 +149,7 @@ def image_phot(hdulist, new_cat_file, filter_name, exp_time, frames=None, cat_fi
                             isinstance(hdu, pyfits.hdu.compressed.CompImageHDU)):
             if catalog_params is not None:
                 print('Detecting sources')
-                cat_objects,bad_sources = detect_sources.findStars(hdu.data, **catalog_params)
+                cat_objects,bad_sources = findStars(hdu.data, **catalog_params)
                 cat_objects = Table(cat_objects)
                 if calc_wcs:
                     wcs = pywcs.WCS(hdu.header)

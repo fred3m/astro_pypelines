@@ -23,7 +23,7 @@ template <class T> std::vector<T> list2Vector2d(PyObject *myList){
     return myVector2d;
 };
 
-static PyObject* astropyp_buildImageTileC(PyObject *self, PyObject *args){
+static PyObject* astro_pypelines_buildImageTileC(PyObject *self, PyObject *args){
     int tile_width,tile_height,dataMin,dataMax;
     char *cScale,*filename;
     Vector2d<double> dataVector2d;
@@ -48,16 +48,16 @@ static PyObject* astropyp_buildImageTileC(PyObject *self, PyObject *args){
     Py_RETURN_TRUE;
 };
 
-static PyMethodDef astropype_methods[] = {
-	{"buildImageTileC",(PyCFunction) astropyp_buildImageTileC, METH_VARARGS,NULL},
+static PyMethodDef astro_pypelinese_methods[] = {
+	{"buildImageTileC",(PyCFunction) astro_pypelines_buildImageTileC, METH_VARARGS,NULL},
 	{NULL,NULL,0,NULL}
 };
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-void initastropyp(){
-	Py_InitModule3("astropyp", astropype_methods,"C functions for Astro Pypeline");
+void initastro_pypelines(){
+	Py_InitModule3("astro_pypelines", astro_pypelinese_methods,"C functions for Astro Pypeline");
 }
 
 #ifdef __cplusplus

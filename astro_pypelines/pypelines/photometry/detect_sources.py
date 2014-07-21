@@ -6,7 +6,7 @@ import scipy.ndimage.filters as filters
 import scipy.ndimage as ndimage
 from scipy.optimize import curve_fit
 
-from ...utils import core
+import astropyp.utils.core as core
 
 # Format of the output for each fit type
 fit_dtypes={

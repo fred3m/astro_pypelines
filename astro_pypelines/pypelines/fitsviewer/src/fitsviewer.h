@@ -21,6 +21,6 @@ void getImageTile(char *filename, int tile_width, int tile_height, int dataMin, 
                     std::string colorScale, Vector2d<int> colorArray, Vector2d<double> imageData);
 
 // Python Interface Functions //
-static PyObject* astropyp_buildImageTileC(PyObject *self, PyObject *args);
+static PyObject* astro_pypelines_buildImageTileC(PyObject *self, PyObject *args);
 template <class T> std::vector<T> list2Vector2d(PyObject *myList);
 #endif

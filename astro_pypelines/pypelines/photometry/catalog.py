@@ -14,9 +14,9 @@ import inspect
 import ast
 
 # astropyp imports
-from ...utils import core
-from ..fitsviewer import fitsviewer
-from ...utils import tools
+import astropyp.utils.core as core
+from astropyp.utils import tools
+from ..fitsviewer.fits_core import getHDUlist
 from . import match
 
 sigfigs=3
@@ -577,7 +577,7 @@ def loadCatalog(id,params):
         sourceFields+=['x','y']
     elif params['coordType']=='wcs':
         try:
-            hdulist=fitsviewer.getHDUlist(id,params['fitsInfo'])
+            hdulist=getHDUlist(id,params['fitsInfo'])
             hdu=hdulist[params['fitsInfo']['frame']]
             catalog.wcs=hdu.wcs
             for n,obj in enumerate(objects):
@@ -664,7 +664,7 @@ def getSourceInfo(id,params):
     if 'distUnits' in params:
         distUnits=params['distUnits']
     if params['wcsConvert']:
-        hdulist=fitsviewer.getHDUlist(id,params['image'])
+        hdulist=getHDUlist(id,params['image'])
         hdu=hdulist[params['image']['frame']]
         wcsArray=hdu.wcs.all_pix2world(np.array([[params['coord1'],params['coord2']]],np.float_),1)
         wcsCoords={
@@ -778,7 +778,7 @@ def addSource(id,params):
         loadCatalog(id,params)
         catalog=user.openCatalogs[catalogId]
     
-    hdulist=fitsviewer.getHDUlist(id,{
+    hdulist=getHDUlist(id,{
         'path':catalog.fitsPath,
         'filename':catalog.fitsName
     })

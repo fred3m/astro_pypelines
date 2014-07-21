@@ -84,12 +84,31 @@ package_info['package_data'][PACKAGENAME].append('data/*')
 c_files = []
 for root, dirs, files in os.walk(PACKAGENAME):
     for filename in files:
-        if filename.endswith('.c'):
+        if filename.lower().endswith('.c') or filename.lower().endswith('.c++') or filename.lower().endswith('.h'):
             c_files.append(
                 os.path.join(
                     os.path.relpath(root, PACKAGENAME), filename))
 package_info['package_data'][PACKAGENAME].extend(c_files)
 
+# Recursively include all files in 'static' and 'templates' directories
+data_files = []
+pypeline_dir = os.path.join(PACKAGENAME,'pypelines')
+pypeline_dirs = os.listdir(pypeline_dir)
+for pyp_dir in pypeline_dirs:
+    for root, dirs, files in os.walk(os.path.join(pypeline_dir, pyp_dir, 'static')):
+        templates = []
+        for filename in files:
+            if filename[0]!='.':
+                templates.append(os.path.join(root,filename))
+        data_files.append((root, templates))
+
+    for root, dirs, files in os.walk(os.path.join(pypeline_dir, pyp_dir, 'templates')):
+        templates = []
+        for filename in files:
+            if filename[0]!='.':
+                templates.append(os.path.join(root,filename))
+        data_files.append((root, templates))
+    
 setup(name=PACKAGENAME,
       version=VERSION,
       description=DESCRIPTION,
@@ -105,5 +124,6 @@ setup(name=PACKAGENAME,
       cmdclass=cmdclassd,
       zip_safe=False,
       use_2to3=True,
+      data_files=data_files,
       **package_info
 )
