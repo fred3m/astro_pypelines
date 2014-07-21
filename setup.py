@@ -84,7 +84,7 @@ package_info['package_data'][PACKAGENAME].append('data/*')
 c_files = []
 for root, dirs, files in os.walk(PACKAGENAME):
     for filename in files:
-        if filename.lower().endswith('.c') or filename.lower().endswith('.c++') or filename.lower().endswith('.h'):
+        if filename.lower().endswith('.c') or filename.lower().endswith('.cpp') or filename.lower().endswith('.h'):
             c_files.append(
                 os.path.join(
                     os.path.relpath(root, PACKAGENAME), filename))
@@ -108,7 +108,7 @@ for pyp_dir in pypeline_dirs:
             if filename[0]!='.':
                 templates.append(os.path.join(root,filename))
         data_files.append((root, templates))
-    
+
 setup(name=PACKAGENAME,
       version=VERSION,
       description=DESCRIPTION,

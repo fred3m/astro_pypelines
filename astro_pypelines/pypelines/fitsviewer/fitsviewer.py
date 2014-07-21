@@ -376,6 +376,7 @@ def loadImageHDU(id,params):
     return {}
 
 def loadTile(id,params):
+    import astro_pypelines
     core.check4key(params,['frame','x','y','tile_width','tile_height','scale','colormap','filetype'])
     hdulist=getHDUlist(id,params)
     try:
@@ -433,7 +434,8 @@ def loadTile(id,params):
         if len(tileData)>0:
             if params['filetype']=='png':
                 #tile['colormap']['colorFunc']="GRAY"
-                if not astropyp.buildImageTileC(filename,tile['colormap']['dataMin'],tile['colormap']['dataMax'],
+                import astro_pypelines.pypelines.fitsviewer.png
+                if not astro_pypelines.pypelines.fitsviewer.png.buildImageTileC(filename,tile['colormap']['dataMin'],tile['colormap']['dataMax'],
                                 tile['colormap']['scale'],tile['colormap']['colorFunc'],tileData):
                     raise core.AstropypError("Unable to load tile")
             elif params['filetype']=='pixels':
