@@ -311,7 +311,7 @@ Astropyp.Pypelines.Fitsviewer.initCatalogCtrl=function(controls,params){
                     params=$.extend(true,params,catType.getParams());
                 };
                 catalogCtrl.controls.fitsviewer.jobsocket.sendTask({
-                    module:'catalog',
+                    module:'photometry.catalog',
                     task:'loadCatalog',
                     parameters:params
                 },catalogCtrl.catViewer.onLoad);
@@ -594,7 +594,7 @@ Astropyp.Pypelines.Fitsviewer.initCatalogCtrl=function(controls,params){
                 }
             };
             catalogCtrl.controls.fitsviewer.jobsocket.sendTask({
-                module:'catalog',
+                module:'photometry.catalog',
                 task:'getSourceInfo',
                 parameters:params
             },
@@ -606,7 +606,7 @@ Astropyp.Pypelines.Fitsviewer.initCatalogCtrl=function(controls,params){
         saveCat:function(options){
             catalogCtrl.controls.fitsviewer.jobsocket.sendTask(
                 {
-                    module:'catalog',
+                    module:'photometry.catalog',
                     task:'saveCatalog',
                     parameters:$.extend(true,{
                         path:catalogCtrl.activeCat.path,
@@ -623,15 +623,9 @@ Astropyp.Pypelines.Fitsviewer.initCatalogCtrl=function(controls,params){
                         if(status){
                             var params=result.params;
                             params.confirmed=true;
-                            /*catalogCtrl.controls.fitsviewer.jobsocket.sendTask({
-                                module:'catalog',
-                                task:'saveCatalog',
-                                parameters:params
-                            });*/
                             catalogCtrl.saveCat(params)
                         };
                     }else if(result.status=='saved'){
-                        //console.log('File saved successfully');
                         params.catalog.fileType='astro';
                         catalogCtrl.$changesList.empty();
                     };
@@ -664,7 +658,7 @@ Astropyp.Pypelines.Fitsviewer.initCatalogCtrl=function(controls,params){
         saveSource:function(options){
             //console.log(catalogCtrl.srcInfo.source);
             catalogCtrl.controls.fitsviewer.jobsocket.sendTask({
-                module:'catalog',
+                module:'photometry.catalog',
                 task:'saveSource',
                 parameters:$.extend(true,{
                     path:catalogCtrl.activeCat.path,
@@ -690,7 +684,7 @@ Astropyp.Pypelines.Fitsviewer.initCatalogCtrl=function(controls,params){
             ///console.log('id to remove:',catalogCtrl.srcInfo.source.info[idIdx]);
             catalogCtrl.controls.fitsviewer.jobsocket.sendTask(
                 {
-                    module:'catalog',
+                    module:'photometry.catalog',
                     task:'removeSource',
                     parameters:$.extend(true,{
                         path:catalogCtrl.activeCat.path,
@@ -737,7 +731,7 @@ Astropyp.Pypelines.Fitsviewer.initCatalogCtrl=function(controls,params){
             var plot=catalogCtrl.controls.surfacePlot;
             catalogCtrl.controls.fitsviewer.jobsocket.sendTask(
                 {
-                    module:'catalog',
+                    module:'photometry.catalog',
                     task:'addSource',
                     parameters:{
                         path:catalog.path,
@@ -812,7 +806,7 @@ Astropyp.Pypelines.Fitsviewer.initCatalogCtrl=function(controls,params){
                             frame:fitsviewer.multiCanvas.current_frame.image.frame
                         },
                         catInfo:{
-                            path:'/media/data-beta/users/fmooleka/astropyp/static/users/fred/projects',
+                            path:'$temp$',
                             filename:'test.npy'
                         },
                         detectParams:detectParams
