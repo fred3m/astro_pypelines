@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <title>First Step in Template Pypeline</title>
+        <script src="static/jquery-2.1.0.min.js" type="text/javascript"></script>
+        <script src="static/astropyp.js" type="text/javascript"></script>
+        <!-- Place any other scripts needed here (example below)-->
+        <script src="pypeline-template/static/template_params.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <!-- Div element to hold parameter elements -->
+        <div id='parameter-div'>
+            <center class='pyp-title'>Parameters</center>
+            <div id='param_list-div'></div>
+        </div>
+        <!-- Div Console to log feedback from the server -->
+        <div id="logger-div">
+            <textarea id="logger" disabled></textarea>
+        </div>
+        <!-- Div element containing buttons -->
+        <div id="buttons-div">
+            <center>
+                <button id='back-btn'>back</button>
+                <button id='save-btn'>save settings</button>
+                <button id='menu-btn'>pypeline menu</button>
+                <button id='submit-btn'>submit</button>
+            </center>
+        </div>
+        <!-- Div element for instructions elements -->
+        <div id='instruction-div'>
+            <center class='pyp-title'>Instructions</center>
+            <p>
+                Place instructions here. One recommendation is to keep in mind who will be using this,
+                namely a few different groups of people:
+            </p>
+            <ol>
+                <li>You</li>
+                <li>Future you, who forgot exactly how this proceedure works</li>
+                <li>Another astronomer who hasn't had the time to read through
+                    your code
+                </li>
+                <li>An undergraduate who barely understands what you just asked him/her to do</li>
+            </ol>
+            <p> In other words, exaplain what parameters are most important in each step, 
+                why they are important, and what (if any) quantities need to be measured or
+                observed from the original image
+            </p>
+        </div>
+        <script>
+        var websocket;
+        var param_height = 70; // % of screen height
+        var logger_height = 63; // % of screen height
+        var button_height = 5; // % of screen height
+        var instruction_height = 23; // % of screen height
+        var param_list;
+        
+        function rxMsg(msg){
+            // Actions to be taken based on message type
+        };
+        
+        function pypeline_onload(options){
+            console.log('Dependencies loaded!')
+        };
+        
+        window.onload = function(){
+            websocket = Astropyp.Core.jobsocketInit({
+                receiveAction:rxMsg,
+                logger:new Astropyp.Utils.Logger(document.getElementById("logger")),
+            });
+            Astropyp.Utils.loadDependencies(
+                Astropyp.Pypelines.Template.dependencies, 
+                pypeline_onload,
+                {}
+            );
+            $('#parameter-div').height(Math.floor($(window).height()*param_height/100));
+            $('#logger-div').height(Math.floor($(window).height()*logger_height/100));
+            $('#instruction-div').height(Math.floor($(window).height()*instruction_height/100));
+            
+            param_list = Astropyp.Utils.initParamList({
+                $div:$('#param_list-div'),
+                type:'div',
+                params:Astropyp.Pypelines.Template.getParameters({
+                    stored_dirs: {
+                        'home': '/users/admin/Documents',
+                        'images': '/users/admin/Pictures',
+                    },
+                    step: 'step1'
+                })
+            });
+            
+            $('#submit-btn').click(function(){
+                var params=param_list.getParams(param_list.params);
+                console.log('Parameters:',params);
+            });
+        };
+        
+        window.onresize = function(){
+            $('#parameter-div').height(Math.floor($(window).height()*param_height/100));
+            $('#logger-div').height(Math.floor($(window).height()*logger_height/100));
+            $('#instruction-div').height(Math.floor($(window).height()*instruction_height/100));
+        }
+        </script>
+    </body>
+</html>

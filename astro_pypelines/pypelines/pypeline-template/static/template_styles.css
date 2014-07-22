@@ -1,0 +1,50 @@
+body,html{
+    background-color:#000000;
+}
+#parameter-div{
+    width: 48%;
+    float: left;
+    background-color:#6699FF;
+    margin: 2px 2px 2px 2px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 6px 6px 6px 6px;
+    overflow: scroll;
+}
+
+#instruction-div{
+    width: 98%;
+    float: left;
+    background-color:#F5F6CE;
+    margin: 5px 2px 2px 2px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 6px 6px 6px 6px;
+    overflow: scroll;
+}
+
+#logger-div{
+    width: 48%;
+    float: left;
+    background-color:#3333FF;
+    margin: 2px 2px 2px 2px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 6px 6px 6px 6px
+}
+
+#logger{
+    width: 95%;
+    height: 95%;
+    resize: none;
+}
+
+#buttons-div{
+    width: 48%;
+    float: left;
+    background-color:#0066CC;
+    margin: 2px 2px 2px 2px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 6px 6px 6px 6px
+}
+
+.pyp-title{
+    font-size: 200%;
+}
