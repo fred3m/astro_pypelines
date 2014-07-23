@@ -21,133 +21,119 @@ Astropyp.Pypelines.Template.dependencies = {
     },
 }
 
-Astropyp.Pypelines.Template.getParameters = function(options){
-    var stored_dirs = {};
-    for(var dir in options.stored_dirs){
-        if(dir != 'session'){
-            stored_dirs[dir] = {
-                prop: {
-                    value: options.stored_dirs[dir],
-                    size: 80
+Astropyp.Pypelines.Template.Parameters = {
+    step1:{
+        'This is a text input':{},
+        subset1:{
+            type:'div',
+            legend:'This set of parameters is grouped together',
+            params:{
+                height:{
+                    lbl:'This is a number input (you can move the number up or down)',
+                    prop:{
+                        type:'number',
+                        min:0,
+                        max:10
+                    }
+                },
+                colors:{
+                    type:'select',
+                    lbl:'Select a color:',
+                    options:{
+                        red:'Red',
+                        green:'Green',
+                        blue:'Blue'
+                    },
+                    defaultVal:'green'
                 },
             }
-        }
-    };
-    
-    var params ={
-        step1:{
-            'This is a text input':{},
-            subset1:{
-                type:'div',
-                legend:'This set of parameters is grouped together',
-                params:{
-                    height:{
-                        lbl:'This is a number input (you can move the number up or down)',
-                        prop:{
-                            type:'number',
-                            min:0,
-                            max:10
-                        }
-                    },
-                    colors:{
-                        type:'select',
-                        lbl:'Select a color:',
-                        options:{
-                            red:'Red',
-                            green:'Green',
-                            blue:'Blue'
-                        },
-                        defaultVal:'green'
-                    },
-                }
-            },
-            subset2:{
-                type:'conditional',
-                params:{
-                    finished:{
-                        lbl:'Show additional options',
-                        prop:{
-                            type:'checkbox',
-                            'checked':true
-                        }
-                    },
+        },
+        subset2:{
+            type:'conditional',
+            params:{
+                finished:{
+                    lbl:'Show additional options',
+                    prop:{
+                        type:'checkbox',
+                        'checked':true
+                    }
                 },
-                paramSets:{
-                    true:{
-                        legend:'This is a conditional set, only shown when the box is checked',
-                        type:'div',
-                        params:{
-                            name:{
-                                lbl:'Name',
-                            },
-                            Age:{
-                                prop:{
-                                    type:'number',
-                                    min:18,
-                                    max:100,
-                                    value:18
-                                }
+            },
+            paramSets:{
+                true:{
+                    legend:'This is a conditional set, only shown when the box is checked',
+                    type:'div',
+                    params:{
+                        name:{
+                            lbl:'Name',
+                        },
+                        Age:{
+                            prop:{
+                                type:'number',
+                                min:18,
+                                max:100,
+                                value:18
                             }
                         }
-                    },
-                    false:{}
-                }
-            },
-            subset3:{
-                type:'conditional',
-                params:{
-                    show:{
-                        type:'select',
-                        lbl:'You can also do conditional parameters based on a selection',
-                        options:{
-                            parents:'Parents names',
-                            children:'Childrens knicknames'
-                        },
-                        defaultVal:'children'
                     }
                 },
-                paramSets:{
-                    parents:{
-                        type:'div',
-                        legend:'You chose parents names',
-                        params:{
-                            mom:{},
-                            dad:{},
-                        }
+                false:{}
+            }
+        },
+        subset3:{
+            type:'conditional',
+            params:{
+                show:{
+                    type:'select',
+                    lbl:'You can also do conditional parameters based on a selection',
+                    options:{
+                        parents:'Parents names',
+                        children:'Childrens knicknames'
                     },
-                    children:{
-                        type:'div',
-                        legend:'You chose childrens knicknames',
-                        divClass:'short-div',
-                        params:{
-                            Bobby:{},
-                            Tracy:{},
-                        }
-                    }
+                    defaultVal:'children'
                 }
             },
-            subset4: {
-                type: 'div',
-                legend: 'You can also make an editable list of options',
-                css: {
-                    'width': 300
+            paramSets:{
+                parents:{
+                    type:'div',
+                    legend:'You chose parents names',
+                    params:{
+                        mom:{},
+                        dad:{},
+                    }
                 },
-                params: {
-                    stored_dirs: {
-                        type: 'list',
-                        radio: 'stored_dirs',
-                        items: stored_dirs,
-                        key_name: 'stored_dir-',
-                        newItem: {
-                            type: 'div',
-                            params: {
-                                path_name: {
-                                    lbl:'directory label'
-                                },
-                                path: {
-                                    prop: {
-                                        size: 80
-                                    }
+                children:{
+                    type:'div',
+                    legend:'You chose childrens knicknames',
+                    divClass:'short-div',
+                    params:{
+                        Bobby:{},
+                        Tracy:{},
+                    }
+                }
+            }
+        },
+        subset4: {
+            type: 'div',
+            legend: 'You can also make an editable list of options',
+            css: {
+                'width': 300
+            },
+            params: {
+                stored_dirs: {
+                    type: 'list',
+                    radio: 'stored_dirs',
+                    items: [],
+                    key_name: 'stored_dir-',
+                    newItem: {
+                        type: 'div',
+                        params: {
+                            path_name: {
+                                lbl:'directory label'
+                            },
+                            path: {
+                                prop: {
+                                    size: 80
                                 }
                             }
                         }
@@ -156,6 +142,4 @@ Astropyp.Pypelines.Template.getParameters = function(options){
             }
         }
     }
-    
-    return params[options.step];
 }

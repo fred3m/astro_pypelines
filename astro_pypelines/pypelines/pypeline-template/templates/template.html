@@ -77,17 +77,32 @@
             $('#logger-div').height(Math.floor($(window).height()*logger_height/100));
             $('#instruction-div').height(Math.floor($(window).height()*instruction_height/100));
             
-            param_list = Astropyp.Utils.initParamList({
-                $div:$('#param_list-div'),
-                type:'div',
-                params:Astropyp.Pypelines.Template.getParameters({
-                    stored_dirs: {
-                        'home': '/users/admin/Documents',
-                        'images': '/users/admin/Pictures',
-                    },
-                    step: 'step1'
-                })
-            });
+            param_list = Astropyp.Utils.initParamList(
+                {
+                    $div:$('#param_list-div'),
+                    type:'div',
+                    params:Astropyp.Pypelines.Template.Parameters.step1
+                },
+                options = {
+                    default:{
+                        show:'parents',
+                        colors:'blue',
+                        finished:false,
+                        mom:'Alice',
+                        dad:'Bob',
+                        stored_dirs: [
+                            {
+                                path_name: 'home',
+                                path: '/users/admin/home',
+                            },
+                            {
+                                path_name: 'images',
+                                path: '/users/admin/images'
+                            }
+                        ]
+                    }
+                }
+            );
             
             $('#submit-btn').click(function(){
                 var params=param_list.getParams(param_list.params);
