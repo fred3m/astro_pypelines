@@ -830,11 +830,16 @@ Astropyp.Pypelines.Fitsviewer.initCatalogCtrl=function(controls,params){
     
     // Source detection parameter dialog
     var $detectDiv=$('<div/>');
-    var detect_list=Astropyp.Utils.initParamList({
-        $div:$detectDiv,
-        type:'div',
-        params:Astropyp.Pypelines.Catalog.DetectionParams
-    });
+    console.log('detectionParams:', Astropyp.Pypelines.Catalog.DetectionParams);
+    var detect_list=Astropyp.Utils.initParamList(
+        {
+            type:'div',
+            params:Astropyp.Pypelines.Catalog.DetectionParams
+        },
+        options = {
+            $parent:$detectDiv
+        }
+    );
     $detectDiv.dialog({
         title:'Select Catalog Type',
         resizable:true,

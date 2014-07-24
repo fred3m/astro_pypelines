@@ -87,8 +87,12 @@ Astropyp.Pypelines.Catalog.DetectionParams={
             }
         },
         paramSets:{
-            true:{},
+            true:{
+                type:'div',
+                params:{}
+            },
             false:{
+                type:'div',
                 params:{
                     aperture_radii:{
                         lbl:'aperture radii',
@@ -114,8 +118,12 @@ Astropyp.Pypelines.Catalog.DetectionParams={
             }
         },
         paramSets:{
-            true:{},
+            true:{
+                type:'div',
+                params:{}
+            },
             false:{
+                type:'div',
                 params:{
                     threshold:{
                         prop:{
@@ -144,6 +152,7 @@ Astropyp.Pypelines.Catalog.DetectionParams={
         },
         paramSets:{
             fitsHeader:{
+                type:'div',
                 params:{
                     saturate_key:{
                         lbl:'Saturation keyword',
@@ -155,6 +164,7 @@ Astropyp.Pypelines.Catalog.DetectionParams={
                 }
             },
             userSpecify:{
+                type:'div',
                 params:{
                     saturation:{
                         prop:{
@@ -181,8 +191,12 @@ Astropyp.Pypelines.Catalog.DetectionParams={
             }
         },
         paramSets:{
-            true:{},
+            true:{
+                type:'div',
+                params:{}
+            },
             false:{
+                type:'div',
                 params:{
                     margin:{
                         prop:{
@@ -209,8 +223,12 @@ Astropyp.Pypelines.Catalog.DetectionParams={
             }
         },
         paramSets:{
-            true:{},
+            true:{
+                type:'div',
+                params:{}
+            },
             false:{
+                type:'div',
                 params:{
                     binStruct:{
                         lbl:'binary structure',
@@ -309,7 +327,10 @@ Astropyp.Pypelines.Catalog.DetectionParams={
                     ratio:{}
                 }
             },
-            false:{}
+            false:{
+                type:'div',
+                params:{}
+            }
         }
     }
 };
