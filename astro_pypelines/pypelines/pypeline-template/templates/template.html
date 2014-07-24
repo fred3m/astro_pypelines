@@ -79,11 +79,11 @@
             
             param_list = Astropyp.Utils.initParamList(
                 {
-                    $div:$('#param_list-div'),
                     type:'div',
                     params:Astropyp.Pypelines.Template.Parameters.step1
                 },
                 options = {
+                    $parent: $('#param_list-div'),
                     default:{
                         show:'parents',
                         colors:'blue',

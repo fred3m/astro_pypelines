@@ -77,7 +77,10 @@ Astropyp.Pypelines.Template.Parameters = {
                         }
                     }
                 },
-                false:{}
+                false:{
+                    type:'div',
+                    params:{}
+                }
             }
         },
         subset3:{
