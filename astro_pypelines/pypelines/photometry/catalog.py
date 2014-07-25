@@ -15,7 +15,7 @@ import ast
 
 # astropyp imports
 import astropyp.utils.core as core
-from astropyp.utils import tools
+from ...utils import tools
 from ..fitsviewer.fits_core import getHDUlist
 from . import match
 
