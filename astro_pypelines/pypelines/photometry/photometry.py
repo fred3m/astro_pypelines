@@ -11,9 +11,13 @@ import astropy.wcs as pywcs
 from astroquery.sdss import SDSS
 from astroquery.vizier import Vizier
 from photutils.detection.lacosmic import lacosmic
-from photutils import CircularAperture, CircularAnnulus, aperture_photometry
+#from photutils import CircularAperture, CircularAnnulus, aperture_photometry
+import photutils
 
 from .detect_sources import findStars
+
+__all__ = ['cosmic_reject', 'cosmic_reject_pyp', 'frame_phot', 'image_phot', 'calc_frame_phot_correction',
+    'calc_image_phot_correction', 'std_plots']
 
 catalog_info = {
     'SDSS': {
@@ -121,10 +125,10 @@ def frame_phot(hdu, cat_objects, phot_file, filter_name, exp_time, mag_zero=0,
     annulus_area = np.pi * (annulus_radius**2 - aperture_radius**2)
 
     objects = zip(cat_objects['x'],cat_objects['y'])
-    apertures = CircularAperture(objects, aperture_radius)
-    annulus_apertures = CircularAnnulus(objects, aperture_radius, annulus_radius)
-    flux = aperture_photometry(hdu.data, apertures)
-    bkg_flux = aperture_photometry(hdu.data, annulus_apertures)
+    apertures = photutils.CircularAperture(objects, aperture_radius)
+    annulus_apertures = photutils.CircularAnnulus(objects, aperture_radius, annulus_radius)
+    flux = photutils.aperture_photometry(hdu.data, apertures)
+    bkg_flux = photutils.aperture_photometry(hdu.data, annulus_apertures)
     
     total_flux = flux-bkg_flux*aperture_area/annulus_area
     instrumental_mag = mag_zero - (2.5*np.log10(total_flux/exp_time))
