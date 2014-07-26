@@ -256,7 +256,7 @@ def calc_image_phot_correction(objects, hdulist, new_cat_file, phot_var, vizier_
 
 def std_plots(objects, catalog, plot_file, filter_name):
     import matplotlib
-    plt = matplotlib.pyplot
+    import matplotlib.pyplot as plt
     matplotlib.use('Agg')
     #group_mean = catalog.groups.aggregate(np.mean)
     #group_std = catalog.groups.aggregate(np.std)
