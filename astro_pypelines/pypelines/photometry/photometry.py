@@ -207,6 +207,14 @@ def calc_frame_phot_correction(objects, cat_file, vizier_var, phot_var, cat_name
     matches, d2d, d3d = cat_coords.match_to_catalog_sky(positions)
     match_col = Column(matches)
     catalog['matches'] = match_col
+    
+    # Remove all sources with duplicate entries (there can be a difference between
+    # the astropy catalog match and the match from Vizier in a few rare cases)
+    duplicates = np.where(np.bincount(match_col)>1)[0]
+    for duplicate in duplicates:
+        match_col[np.where(match_col==duplicate)]=-1
+    catalog = catalog[match_col>=0]    
+
     catalog = catalog.group_by('matches')
     print('Total matches:', len(catalog.groups.keys['matches']))
     
@@ -239,6 +247,10 @@ def calc_image_phot_correction(objects, hdulist, new_cat_file, phot_var, vizier_
             )
             catalogs[str(frame)] = catalog
             matches = catalog.groups.keys['matches']
+            #print('catalog matches:',[match for match in catalog['matches']])
+            #print('matches_length', len(matches))
+            #print('obj length:', len(objects[str(frame)][matches][phot_var]))
+            #print('catalog length:', len(catalog))
             diff = objects[str(frame)][matches][phot_var]-catalog[phot_var]
             
             #group_mean = catalog.groups.aggregate(np.mean)
