@@ -19,4 +19,8 @@ pypeline_handlers = [
         'template_name': 'template.html',
         'template_path': [pypeline_dir, 'pypeline-template', 'templates']
     }),
+    (r"/scatter", BaseHandler, {
+        'template_name': 'scatter.html',
+        'template_path': [pypeline_dir, 'interactive_plots', 'templates']
+    }),
 ]

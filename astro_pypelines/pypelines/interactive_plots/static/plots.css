@@ -1,0 +1,23 @@
+body,html{
+    background-color:#000000;
+}
+#parameter-div{
+    width: 22%;
+    float: left;
+    background-color:#6699FF;
+    margin: 2px 2px 2px 2px;
+    padding: 5px 5px 5px 5px;
+    border-radius: 6px 6px 6px 6px;
+    overflow: scroll;
+}
+
+#plot-div{
+    width: 74%;
+    float: left;
+    margin: 2px 2px 2px 2px;
+    padding: 5px 5px 5px 5px;
+}
+
+.pyp-title{
+    font-size: 200%;
+}
