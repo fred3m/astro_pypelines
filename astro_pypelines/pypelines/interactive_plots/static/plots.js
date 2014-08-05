@@ -20,6 +20,11 @@ Astropyp.Pypelines.Plots.dependencies = {
         isloaded:'Highcharts',
         wait:true
     },
+    high_charts_export:{
+        url:'static/Highcharts-3.0.10/js/modules/exporting.js',
+        isloaded:'Highcharts',
+        wait:true
+    },
     plot_css:{
         url:'interactive_plots/static/plots.css',
         wait:false
@@ -27,10 +32,74 @@ Astropyp.Pypelines.Plots.dependencies = {
 }
 
 Astropyp.Pypelines.Plots.initParams = function(options){
+    var formats = {};
+    for(var i=0; i<Astropyp.Pypelines.Plots.Astropy_tbl_formats.length; i++){
+        formats[Astropyp.Pypelines.Plots.Astropy_tbl_formats[i]] = Astropyp.Pypelines.Plots.Astropy_tbl_formats[i];
+    }
+    
     var params = {
-        scatter:{
+        main: {
+            plot_list_div:{
+                type: 'div',
+                legend: 'Plots',
+                params:{
+                    plot_list:{
+                        type: 'list',
+                        lbl: 'Plots',
+                        radio: 'plots',
+                        newItem: {
+                            type: 'div',
+                            params: {
+                                plot_name: {
+                                    lbl:'plot name',
+                                },
+                            }
+                        }
+                    },
+                    edit: {
+                        lbl:'',
+                        type: 'button',
+                        prop: {
+                            innerHTML: 'edit'
+                        },
+                        func: {
+                            click: function(edit_dialog){
+                                return function(){
+                                    $edit_dialog.dialog('open');
+                                    var item_name = $('input[name='+params.main.plot_list_div.params.plot_list.radio+']:checked').val();
+                                    console.log('selected:', item_name);
+                                }
+                            }(options.edit_dialog)
+                        }
+                    }
+                }
+            },
+            selection_type: {
+                type: 'select',
+                lbl: 'selection type',
+                options: {
+                    zoom: 'zoom to selection',
+                    multiple: 'select multiple points'
+                }
+            },
+            build_plot: {
+                type: 'button',
+                lbl:'',
+                prop: {
+                    innerHTML: 'Build'
+                },
+                func: {
+                    click: options.buildPlotFunc
+                }
+            }
+        },
+        plot_params:{
             filename: {
                 file_dialog: options.file_dialog,
+            },
+            format: {
+                type: 'select',
+                options: formats
             },
             load_file_btn: {
                 type:'button',
@@ -134,14 +203,91 @@ Astropyp.Pypelines.Plots.initParams = function(options){
                     }
                 }
             },
-            show_btn: {
-                type:'button',
-                lbl:'',
-                prop:{
-                    innerHTML:'build plot'
-                },
-                func:{
-                    click:options.buildPlotFunc
+            highcharts_div: {
+                type: 'div',
+                legend: 'Advanced Settings',
+                params: {
+                    edit_title_div: {
+                        type: 'conditional',
+                        params: {
+                            edit_title: {
+                                prop: {
+                                    type: 'checkbox',
+                                    checked: false
+                                }
+                            }
+                        },
+                        paramSets: {
+                            true: {
+                                type: 'div',
+                                params: {
+                                    name: {
+                                        lbl: 'title'
+                                    }
+                                }
+                            },
+                            false: {
+                                type: 'div',
+                                params: {}
+                            }
+                        }
+                    },
+                    plot_type: {
+                        type: 'select',
+                        options: {
+                            scatter: 'scatter plot',
+                            line: 'line plot',
+                            spline: 'curved line plot (spline)',
+                            area: 'area plot',
+                            areaspline: 'curved line area plot (areaspline)',
+                            bar: 'horizontal bar chart',
+                            column: 'vertical bar chart (column)',
+                            pie: 'pie chart',
+                            polar: 'polar chart',
+                            //range: 'range series (not yet implemented)'
+                        }
+                    },
+                    marker_div: {
+                        type: 'div',
+                        legend: 'Plot marker options',
+                        params: {
+                            fillColor: {
+                                prop: {
+                                    value: 'rgba(100,10,10,.5)'
+                                }
+                            },
+                            lineColor: {
+                                prop: {
+                                    value: 'rgb(100,10,10)'
+                                }
+                            },
+                            lineWidth: {
+                                prop: {
+                                    value: 1
+                                }
+                            },
+                            symbol: {
+                                type: 'select',
+                                options: {
+                                    circle: 'circle',
+                                    square: 'square',
+                                    diamond: 'diamond',
+                                    triangle: 'triangle',
+                                    'triangle-down': 'upside down triangle'
+                                }
+                            },
+                            radius: {
+                                prop: {
+                                    value: 4
+                                }
+                            },
+                            enabled: {
+                                prop: {
+                                    value: true
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -149,3 +295,11 @@ Astropyp.Pypelines.Plots.initParams = function(options){
     
     return params;
 }
+
+Astropyp.Pypelines.Plots.Astropy_tbl_formats = [
+    'ascii', 'ascii.aastex', 'ascii.basic', 'ascii.cds', 'ascii.commented_header',
+    'ascii.daophot', 'ascii.fixed_width', 'ascii.fixed_width_no_header', 'ascii.html', 
+    'ascii.fixed_width_two_line', 'ascii.ipac', 'ascii.latex', 'ascii.no_header',
+    'ascii.rdb', 'ascii.sextractor', 'ascii.tab', 'ascii.csv', 'cds', 'daophot',
+    'fits', 'hd5', 'html', 'ipac', 'latex', 'rdb', 'votable', 'npy'
+]

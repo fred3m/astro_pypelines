@@ -4,7 +4,10 @@ import numpy as np
 from astropy.table import Table
 
 def load_table(id, params):
-    catalog = Table.read(params['filename'], format= 'ascii');
+    if params['format'] == 'npy':
+        catalog = np.load(params['filename'])
+    else:
+        catalog = Table.read(params['filename'], format= params['format']);
     response = {
         'id': 'plot table',
         'columns': catalog.dtype.names,
