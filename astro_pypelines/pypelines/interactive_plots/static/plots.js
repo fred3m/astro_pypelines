@@ -63,15 +63,31 @@ Astropyp.Pypelines.Plots.initParams = function(options){
                             innerHTML: 'edit'
                         },
                         func: {
-                            click: function(edit_dialog){
+                            click: function($edit_dialog){
                                 return function(){
                                     $edit_dialog.dialog('open');
                                     var item_name = $('input[name='+params.main.plot_list_div.params.plot_list.radio+']:checked').val();
                                     console.log('selected:', item_name);
                                 }
-                            }(options.edit_dialog)
+                            }(options.$edit_dialog)
                         }
-                    }
+                    },
+                    fit: {
+                        lbl:'',
+                        type: 'button',
+                        prop: {
+                            innerHTML: 'fit',
+                        },
+                        func: {
+                            click: function($fit_dialog){
+                                return function(){
+                                    $fit_dialog.dialog('open');
+                                    var item_name = $('input[name='+params.main.plot_list_div.params.plot_list.radio+']:checked').val();
+                                    console.log('selected:', item_name);
+                                }
+                            }(options.$fit_dialog)
+                        }
+                    },
                 }
             },
             selection_type: {
@@ -251,14 +267,60 @@ Astropyp.Pypelines.Plots.initParams = function(options){
                         type: 'div',
                         legend: 'Plot marker options',
                         params: {
-                            fillColor: {
-                                prop: {
-                                    value: 'rgba(100,10,10,.5)'
+                            fill_color_div:{
+                                type: 'conditional',
+                                params: {
+                                    show_fill_color: {
+                                        lbl: 'custom fill color',
+                                        prop: {
+                                            type: 'checkbox',
+                                            checked: false
+                                        }
+                                    }
+                                },
+                                paramSets: {
+                                    true: {
+                                        type: 'div',
+                                        params: {
+                                            fillColor: {
+                                                prop: {
+                                                    value: 'rgba(100,10,10,.5)'
+                                                }
+                                            },
+                                        }
+                                    },
+                                    false: {
+                                        type: 'div',
+                                        params: {}
+                                    }
                                 }
                             },
-                            lineColor: {
-                                prop: {
-                                    value: 'rgb(100,10,10)'
+                            line_color_div: {
+                                type: 'conditional',
+                                params: {
+                                    show_line_color: {
+                                        lbl: 'custom line color',
+                                        prop: {
+                                            type: 'checkbox',
+                                            checked: false
+                                        }
+                                    }
+                                },
+                                paramSets: {
+                                    true: {
+                                        type: 'div',
+                                        params: {
+                                            lineColor: {
+                                                prop: {
+                                                    value: 'rgb(100,10,10)'
+                                                }
+                                            },
+                                        }
+                                    },
+                                    false: {
+                                        type: 'div',
+                                        prop: {}
+                                    }
                                 }
                             },
                             lineWidth: {
@@ -283,11 +345,85 @@ Astropyp.Pypelines.Plots.initParams = function(options){
                             },
                             enabled: {
                                 prop: {
-                                    value: true
+                                    type: 'checkbox',
+                                    checked: true
                                 }
                             }
                         }
                     }
+                }
+            }
+        },
+        fit_params: {
+            model_div: {
+                type: 'conditional',
+                params: {
+                    model: {
+                        type: 'select',
+                        options: {
+                            polynomial: 'polynomial',
+                            gaussian: 'gaussian',
+                            exponential: 'exponential',
+                        }
+                    }
+                },
+                paramSets: {
+                    polynomial: {
+                        type: 'div',
+                        params: {
+                            order: {
+                                prop: {
+                                    type: 'number',
+                                    value: 2
+                                }
+                            },
+                            coefficients: {
+                                lbl: 'initial guess (coefficients)',
+                                prop: {
+                                    value: '0,1,1'
+                                }
+                            }
+                        }
+                    },
+                    gaussian: {
+                        type: 'div',
+                        params: {
+                            mean: {
+                                prop: {
+                                    type: 'number',
+                                    value: 0
+                                }
+                            },
+                            std_dev: {
+                                lbl: 'standard deviation',
+                                prop: {
+                                    type: 'number',
+                                    value: 1
+                                }
+                            },
+                            amplitude: {
+                                prop: {
+                                    type: 'number',
+                                    value: 1
+                                }
+                            },
+                            floor: {
+                                prop: {
+                                    type: 'number',
+                                    value: 0
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            fit_type: {
+                type: 'select',
+                options: {
+                    linearLSQ: 'linear least squares',
+                    levMarLSQ: 'Levenberg-Marquardt LSQ',
+                    SLSQPLSQ: 'SLSQP least squares',
+                    simplexLSQ: 'simplex least squares'
                 }
             }
         }

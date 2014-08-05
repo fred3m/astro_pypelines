@@ -18,51 +18,96 @@
         <div id='plot-div'></div>
         <div id='file-dialog'></div>
         <div id='edit-dialog'></div>
+        <div id='fit-dialog'></div>
         <script>
         var websocket;
         var param_height = 98; // % of screen height
         var plot_height = 98; // % of screen height
         var param_list;
         var edit_param_list;
+        var fit_param_list;
         var chart;
         var plot_params = {};
+        
+        function parseNewData(msg){
+            var plot_data = []
+            $.each(msg.data, function(i, entry){
+                var record = {};
+                $.each(msg.columns, function(j, column){
+                    record[column] = entry[j]
+                });
+                plot_data.push(record);
+            });
+            console.log('data', plot_data);
+            
+            // clear fields from last table
+            edit_param_list.params.params.x_axis.$input.html('');
+            edit_param_list.params.params.y_axis.$input.html('');
+            edit_param_list.params.params.show_x_error_div.paramSets.true.params.x_error.$input.html('');
+            edit_param_list.params.params.show_y_error_div.paramSets.true.params.y_error.$input.html('');
+            edit_param_list.params.params.group_div.paramSets.true.params.group_var.$input.html('');
+            
+            for(var i=0; i<msg.columns.length; i++){
+                var column = msg.columns[i];
+                $option = $('<option/>').html(column).val(column);
+                $option.clone().appendTo(edit_param_list.params.params.x_axis.$input);
+                $option.clone().appendTo(edit_param_list.params.params.y_axis.$input);
+                $option.clone().appendTo(edit_param_list.params.params.show_x_error_div.paramSets.true.params.x_error.$input);
+                $option.clone().appendTo(edit_param_list.params.params.show_y_error_div.paramSets.true.params.y_error.$input);
+                $option.clone().appendTo(edit_param_list.params.params.group_div.paramSets.true.params.group_var.$input);
+            };
+            edit_param_list.params.params.y_axis.$input.val(msg.columns[1]);
+            
+            var item_name = $('input[name='+param_list.params.params.plot_list_div.params.plot_list.radio+']:checked').val();
+            //plot_params[item_name].original_data = plot_data;
+            plot_params[item_name].data = plot_data;
+            plot_params[item_name].title = msg.title;
+        }
         
         function rxMsg(msg){
             // Actions to be taken based on message type
             if(msg.id == 'plot table'){
-                var plot_data = []
-                $.each(msg.data, function(i, entry){
-                    var record = {};
-                    $.each(msg.columns, function(j, column){
-                        record[column] = entry[j]
-                    });
-                    plot_data.push(record);
+                parseNewData(msg);
+            } else if(msg.id == 'best fit'){
+                var plot_btns = param_list.params.params.plot_list_div.params.plot_list.buttons;
+                var plot_list = param_list.params.params.plot_list_div.params.plot_list;
+                plot_btns.add.$input.click();
+                var item_name = $('input[name='+plot_list.radio+']:checked').val();
+                var fit_plot = plot_params[item_name];
+                console.log('plot_list', plot_list);
+                console.log('fit_plot', fit_plot);
+                console.log('best fit:', msg);
+                
+                parseNewData(msg);
+                
+                edit_param_list.setParams(edit_param_list.params, '', {
+                    filename: 'fit',
+                    x_axis: 'model_x',
+                    y_axis: 'model_y',
+                    plot_type: 'spline',
+                    enabled: false
                 });
-                console.log('data', plot_data);
                 
-                // clear fields from last table
-                edit_param_list.params.params.x_axis.$input.html('');
-                edit_param_list.params.params.y_axis.$input.html('');
-                edit_param_list.params.params.show_x_error_div.paramSets.true.params.x_error.$input.html('');
-                edit_param_list.params.params.show_y_error_div.paramSets.true.params.y_error.$input.html('');
-                edit_param_list.params.params.group_div.paramSets.true.params.group_var.$input.html('');
+                fit_plot.param_list = edit_param_list.getParams(edit_param_list.params);
                 
-                for(var i=0; i<msg.columns.length; i++){
-                    var column = msg.columns[i];
-                    $option = $('<option/>').html(column).val(column);
-                    $option.clone().appendTo(edit_param_list.params.params.x_axis.$input);
-                    $option.clone().appendTo(edit_param_list.params.params.y_axis.$input);
-                    $option.clone().appendTo(edit_param_list.params.params.show_x_error_div.paramSets.true.params.x_error.$input);
-                    $option.clone().appendTo(edit_param_list.params.params.show_y_error_div.paramSets.true.params.y_error.$input);
-                    $option.clone().appendTo(edit_param_list.params.params.group_div.paramSets.true.params.group_var.$input);
+                
+                /*var plot_list = param_list.params.params.plot_list_div.params.plot_list;
+                var item_name = $('input[name='+plot_list.radio+']:checked').val();
+                var item;
+                console.log('plot_list:', plot_list);
+                for(var i=0; i<plot_list.items.length;i++){
+                    if(plot_list.items[i].$radio.val()==item_name){
+                        item = i;
+                    }
                 };
-                edit_param_list.params.params.y_axis.$input.val(msg.columns[1]);
-                
-                var item_name = $('input[name='+param_list.params.params.plot_list_div.params.plot_list.radio+']:checked').val();
-                console.log('rxMsg selected:', item_name);
-                plot_params[item_name].original_data = plot_data;
-                plot_params[item_name].data = plot_data.slice(0);
-                plot_params[item_name].title = msg.title;
+                console.log('save selected:', item_name);
+                plot_params[item_name].param_list = edit_param_list.getParams(edit_param_list.params);
+                console.log('plot params:', plot_params);
+                var title;
+                plot_name = plot_params[item_name].param_list.filename.split('/');
+                plot_name = plot_name[plot_name.length-1];
+                plot_params[item_name].param_list.plot_name = plot_name;
+                plot_list.items[item].params.plot_name.$input.val(plot_name);*/
             }
         };
         
@@ -141,12 +186,14 @@
                 },
                 series: series_data
             });
+            
+            console.log('chart:', chart);
         };
         
         function addSeries(data, options){
             console.log('options:', options);
             var series_fields = ['name'];
-            var marker_fields = ['enabled', 'fillColor', 'lineColor', 'lineWidth','radius','symbol'];
+            var marker_fields = ['enabled','fillColor', 'lineColor', 'lineWidth','radius','symbol'];
             var series = {
                 name: options.plot_name,
                 type: options.plot_type,
@@ -177,17 +224,8 @@
             return series;
         }
         
-        function buildPlot(plot_data, params){
+        function extractData(plot_data, params){
             var data = [];
-            for(var i=0; i<plot_data.length; i++){
-                data[i] = {
-                    x: plot_data[i][params.x_axis],
-                    y: plot_data[i][params.y_axis],
-                    other_data: plot_data[i]
-                }
-            };
-            console.log('data:', data);
-            //var params = edit_param_list.getParams(edit_param_list.params);
             
             function x_sort(a,b){
                 if(a['x']<b['x']){
@@ -198,6 +236,22 @@
                 return 0;
             };
             
+            for(var i=0; i<plot_data.length; i++){
+                data[i] = {
+                    x: plot_data[i][params.x_axis],
+                    y: plot_data[i][params.y_axis],
+                    other_data: plot_data[i]
+                }
+            };
+            data.sort(x_sort);
+            console.log('data:', data);
+            return data;
+        }
+        
+        function buildPlot(plot_data, params){
+            var data = extractData(plot_data, params);
+            var series_data = [];
+            
             function findUnique(data, key){
                 var values = [];
                 for(var i=0; i<data.length; i++){
@@ -207,10 +261,6 @@
                 }
                 return values;
             };
-            
-            data.sort(x_sort);
-
-            var series_data = [];
             
             if(params.show_y_error){
                 var err_data = [];
@@ -263,33 +313,9 @@
                     delete params.lineColor;
                     params.name = keys[i];
                     series_data.push(addSeries(data_sets[keys[i]], params));
-                    /*series_data.push({
-                        name: keys[i],
-                        type: 'line',
-                        turboThreshold:plot_data.length+10,
-                        data:data_sets[keys[i]],
-                        allowPointSelect:true,
-                        marker:{
-                            enabled:true,
-                            symbol:'circle',
-                            radius: 4
-                        }
-                    })*/
                 };
             } else {
                 series_data.push(addSeries(data, params));
-                /*series_data.push({
-                    type:'line',
-                    //color: 'rgba(223, 83, 83, .5)',
-                    turboThreshold:plot_data.length+10,
-                    data:data,
-                    allowPointSelect:true,
-                    marker:{
-                        enabled:true,
-                        symbol:'circle',
-                        radius: 4
-                    }
-                })*/
             }
             
             console.log('series data', series_data);
@@ -334,12 +360,14 @@
             });
             
             $edit_dialog = $('#edit-dialog');
+            var $fit_dialog = $('#fit-dialog');
             
             var params = Astropyp.Pypelines.Plots.initParams({
                 file_dialog: file_dialog,
                 buildPlotFunc: buildAllPlots,
                 loadFunc: loadTable,
-                $edit_dialog: $edit_dialog
+                $edit_dialog: $edit_dialog,
+                $fit_dialog: $fit_dialog
             });
             
             param_list = Astropyp.Utils.initParamList(
@@ -357,24 +385,20 @@
             
             plot_btns.add.$input.click(function(){
                 var item_name = $('input[name='+param_list.params.params.plot_list_div.params.plot_list.radio+']:checked').val();
-                console.log('add selected:', item_name);
                 plot_params[item_name] = {
                     param_list: edit_param_list.getParams(param_list.params)
                 };
-                console.log('plot_params:', plot_params);
+                param_list.params.params.plot_list_div.params.edit.$input.click();
             })
             
             plot_btns.remove.$input.click(function(){
                 var item_name = $('input[name='+param_list.params.params.plot_list_div.params.plot_list.radio+']:checked').val();
-                console.log('remove selected:', item_name);
                 delete plot_params[item_name];
-                console.log('plot_params:', plot_params);
             })
             
             plot_btns = param_list.params.params.plot_list_div.params.edit.$input.click(function(){
                 var item_name = $('input[name='+param_list.params.params.plot_list_div.params.plot_list.radio+']:checked').val();
                 console.log('edit selected:', item_name);
-                console.log('new list should be', plot_params[item_name].param_list);
                 console.log('plot params:', plot_params);
                 edit_param_list.setParams(edit_param_list.params, 'edit', plot_params[item_name].param_list);
             })
@@ -421,6 +445,56 @@
                         plot_name = plot_name[plot_name.length-1];
                         plot_params[item_name].param_list.plot_name = plot_name;
                         plot_list.items[item].params.plot_name.$input.val(plot_name);
+                        $(this).dialog('close');
+                    },
+                    'Cancel': function(){
+                        $(this).dialog('close');
+                    }
+                }
+            }).css("font-size", "12px");
+            
+            fit_param_list = Astropyp.Utils.initParamList(
+                {
+                    type:'div',
+                    params:params.fit_params
+                },
+                options = {
+                    $parent: $fit_dialog
+                }
+            );
+            
+            $fit_dialog.dialog({
+                title:'Fit Options',
+                resizable:true,
+                width:500,
+                draggable:true,
+                autoOpen:false,
+                modal:false,
+                position:{
+                    of:$(window),
+                    my:"left top",
+                    at:"left top"
+                },
+                buttons: {
+                    'Get Fit': function(){
+                        var plot_list = param_list.params.params.plot_list_div.params.plot_list;
+                        var item_name = $('input[name='+plot_list.radio+']:checked').val();
+                        var this_plot = plot_params[item_name];
+                        var plot_data = extractData(this_plot.data, this_plot.param_list);
+                        var fit_params = fit_param_list.getParams(fit_param_list.params);
+                        
+                        fit_params.x = []
+                        fit_params.y = []
+                        $.each(plot_data, function(i, entry){
+                            fit_params.x.push(entry.x);
+                            fit_params.y.push(entry.y);
+                        });
+                        
+                        websocket.sendTask({
+                            module: 'interactive_plots.plots',
+                            task: 'fit_data1d',
+                            parameters: fit_params
+                        })
                         $(this).dialog('close');
                     },
                     'Cancel': function(){
