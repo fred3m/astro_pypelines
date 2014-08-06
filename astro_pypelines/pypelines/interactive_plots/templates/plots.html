@@ -94,7 +94,6 @@
                 parseNewData(msg, 'data points');
             } else if(msg.id == 'best fit'){
                 // Create a new plot netry with the fit
-                console.log('fit msg:', msg);
                 var plot_list = main_params.getParam('plot_list');
                 var plot_btns = plot_list.buttons;
                 plot_btns.add.$input.click();
@@ -120,7 +119,7 @@
             var x_axis_title;
             var y_axis_title;
             var chart_events = {}
-            for(plot in all_plots){
+            for(var plot in all_plots){
                 all_plots[plot].param_values.name = all_plots[plot].name;
                 var new_series = buildPlot(all_plots[plot].data, all_plots[plot].param_values);
                 for(i=0; i<new_series.length; i++){
@@ -190,7 +189,7 @@
                 series: series_data
             });
             
-            console.log('chart:', chart);
+            console.log(chart);
         };
         
         function addSeries(data, options){
@@ -437,6 +436,17 @@
                         var plot_list = main_params.getParam('plot_list');
                         var item_name = plot_list.getSelectedName();
                         all_plots[item_name].param_values = edit_params.getParams(edit_params.params);
+                        
+                        if(!(chart===undefined)){
+                            var new_series = buildPlot(all_plots[item_name].data, all_plots[item_name].param_values);
+                            for(i=0; i<new_series.length; i++){
+                                chart.addSeries(new_series[i]);
+                            };
+                            chart.redraw();
+                        }else{
+                            buildAllPlots();
+                        };
+                        
                         $(this).dialog('close');
                     },
                     'Cancel': function(){
@@ -473,7 +483,6 @@
                         var item_name = plot_list.getSelectedName();
                         var this_plot = all_plots[item_name];
                         var series_id = plot_list.getSelectedParam().params.plot_name.$input.val();
-                        console.log('series data:', chart.get(series_id));
                         var series_data = chart.get(series_id).points;
                         var fit_parameters = fit_params.getParams(fit_params.params);
                         

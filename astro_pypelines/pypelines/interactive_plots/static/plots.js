@@ -94,15 +94,15 @@ Astropyp.Pypelines.Plots.initParams = function(options){
                 type: 'select',
                 lbl: 'selection type',
                 options: {
+                    multiple: 'select multiple points',
                     zoom: 'zoom to selection',
-                    multiple: 'select multiple points'
                 }
             },
             build_plot: {
                 type: 'button',
                 lbl:'',
                 prop: {
-                    innerHTML: 'Build'
+                    innerHTML: 'Re-build'
                 },
                 func: {
                     click: options.buildPlotFunc
