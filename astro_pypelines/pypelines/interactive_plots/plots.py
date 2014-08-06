@@ -16,10 +16,13 @@ def load_table(id, params):
         catalog = np.load(params['filename'])
     else:
         catalog = Table.read(params['filename'], format= params['format']);
+    # Check each row for nan values and discard them
+    for col in catalog.dtype.names:
+        catalog= catalog[~np.isnan(catalog[col])]
     response = {
         'id': 'plot table',
         'columns': catalog.dtype.names,
-        'data': [np.array(record).tolist() for record in catalog],
+        'data': [np.array(list(record)).tolist() for record in catalog],
         'title': os.path.basename(params['filename'])
     }
     return response
