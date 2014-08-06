@@ -20,7 +20,7 @@ def load_table(id, params):
         'id': 'plot table',
         'columns': catalog.dtype.names,
         'data': [np.array(record).tolist() for record in catalog],
-        'title': params['filename']
+        'title': os.path.basename(params['filename'])
     }
     return response
 
@@ -43,7 +43,7 @@ def fit_data1d(id, params):
     rms_dev = np.sqrt(mean_sq_err)
     parameters = {}
     for n in range(len(best_fit._parameters)):
-        parameters[n] = best_fit._parameters[n]
+        parameters[best_fit.param_names[n]] = best_fit._parameters[n]
     array_x = np.array(params['x'])
     model_x = np.linspace(np.amin(array_x), np.amax(array_x),30)
     model_y = best_fit(model_x)

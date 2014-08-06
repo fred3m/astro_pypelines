@@ -62,7 +62,7 @@ Astropyp.Pypelines.Plots.initParams = function(options){
                         prop: {
                             innerHTML: 'edit'
                         },
-                        func: {
+                        /*func: {
                             click: function($edit_dialog){
                                 return function(){
                                     $edit_dialog.dialog('open');
@@ -70,7 +70,7 @@ Astropyp.Pypelines.Plots.initParams = function(options){
                                     console.log('selected:', item_name);
                                 }
                             }(options.$edit_dialog)
-                        }
+                        }*/
                     },
                     fit: {
                         lbl:'',
@@ -106,6 +106,16 @@ Astropyp.Pypelines.Plots.initParams = function(options){
                 },
                 func: {
                     click: options.buildPlotFunc
+                }
+            },
+            fit_info_group: {
+                type: 'div',
+                legend: 'Fit parameters',
+                params: {
+                    fit_info_div: {
+                        type: 'div',
+                        params: {}
+                    }
                 }
             }
         },
@@ -223,31 +233,6 @@ Astropyp.Pypelines.Plots.initParams = function(options){
                 type: 'div',
                 legend: 'Advanced Settings',
                 params: {
-                    edit_title_div: {
-                        type: 'conditional',
-                        params: {
-                            edit_title: {
-                                prop: {
-                                    type: 'checkbox',
-                                    checked: false
-                                }
-                            }
-                        },
-                        paramSets: {
-                            true: {
-                                type: 'div',
-                                params: {
-                                    name: {
-                                        lbl: 'title'
-                                    }
-                                }
-                            },
-                            false: {
-                                type: 'div',
-                                params: {}
-                            }
-                        }
-                    },
                     plot_type: {
                         type: 'select',
                         options: {
