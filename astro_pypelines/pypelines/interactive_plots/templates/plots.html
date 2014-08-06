@@ -27,6 +27,7 @@
         var fit_params;
         var chart;
         var all_plots = {};
+        var duplicate_ids = {};
         
         // Enables prepending a new event to an objects event handlers
         $.fn.preBind = function (type, data, fn) {
@@ -40,6 +41,22 @@
             });
             return this;
         };
+        
+        function getUniqueId(plot_name){
+            for(var i=0; i<chart.series.length; i++){
+                if(chart.series[i].options.id==plot_name){
+                    if(duplicate_ids.hasOwnProperty(plot_name)){
+                        var count = duplicate_ids[plot_name];
+                        count++;
+                        return plot_name+'-'+count;
+                    }else{
+                        duplicate_ids[plot_name] = 1;
+                        return plot_name+'-1';
+                    }
+                }
+            }
+            return plot_name;
+        }
         
         function parseNewData(msg, data_type){
             var plot_data = []
@@ -72,9 +89,14 @@
             
             var item_name = main_params.getParam('plot_list').getSelectedName();
             all_plots[item_name].data = plot_data;
-            all_plots[item_name].name = msg.title;
+            var plot_name = msg.title;
+            // If a plot with the same name exists, give the new plot a new name
+            if(!(chart === undefined)){
+                plot_name = getUniqueId(plot_name);
+            };
+            all_plots[item_name].name = plot_name;
             all_plots[item_name].data_type = data_type;
-            main_params.getParam('plot_list').getSelectedParam().params.plot_name.$input.val(msg.title);
+            main_params.getParam('plot_list').getSelectedParam().params.plot_name.$input.val(plot_name);
         }
         
         function updateFitInfo(fit_info){
@@ -189,7 +211,7 @@
                 series: series_data
             });
             
-            console.log(chart);
+            console.log('chart:',chart);
         };
         
         function addSeries(data, options){
@@ -222,6 +244,7 @@
                 },
                 cursor: 'pointer'
             });
+            console.log('series:', series);
             return series;
         }
         
@@ -393,7 +416,16 @@
                 // update the plot name when the textbox is changed
                 $new_div.params.plot_name.$input.change(function(){
                     var item_name = main_params.getParam('plot_list').getSelectedName();
+                    var old_name = all_plots[item_name].name;
                     all_plots[item_name].name = main_params.getParam('plot_list').getSelectedParam().params.plot_name.$input.val();
+                    // update the series name as well
+                    if(!(chart===undefined)){
+                        chart.get(old_name).update({
+                            name: all_plots[item_name].name,
+                            id: all_plots[item_name].name
+                        });
+                        chart.redraw();
+                    }
                 });
                 
                 // open the menu to edit the plot parameters
@@ -401,6 +433,7 @@
             })
             plot_btns.remove.$input.preBind('click', function(){
                 var item_name = main_params.getParam('plot_list').getSelectedName();
+                chart.get(all_plots[item_name].name).remove(true);
                 delete all_plots[item_name];
             });
             plot_btns = main_params.getParam('edit').$input.click(function(){
@@ -437,10 +470,32 @@
                         var item_name = plot_list.getSelectedName();
                         all_plots[item_name].param_values = edit_params.getParams(edit_params.params);
                         
+                        // Update the series if it already exists, otherwise add it to the chart
+                        // If the chart hasn't been created yet, build it
                         if(!(chart===undefined)){
+                            all_plots[item_name].param_values.name = all_plots[item_name].name;
                             var new_series = buildPlot(all_plots[item_name].data, all_plots[item_name].param_values);
-                            for(i=0; i<new_series.length; i++){
-                                chart.addSeries(new_series[i]);
+                            console.log('new series:', new_series);
+                            for(var i=0; i<new_series.length; i++){
+                                var found_ids = [];
+                                for(var j=0; j<chart.series.length; j++){
+                                    if(chart.series[j].options.id == new_series[i].id){
+                                        found_ids.push([i,j]);
+                                        console.log('item name', item_name);
+                                        console.log('chart id:', chart.series[j].options.id);
+                                        console.log('series id:', new_series[i].id);
+                                    }
+                                };
+                                if(found_ids.length>0){
+                                    for(var i=0; i<found_ids.length; i++){
+                                        chart.series[found_ids[i][1]].update({
+                                            type: new_series[found_ids[i][0]].type,
+                                            marker: new_series[found_ids[i][0]].marker
+                                        })
+                                    }
+                                }else{
+                                    chart.addSeries(new_series[i]);
+                                }
                             };
                             chart.redraw();
                         }else{
