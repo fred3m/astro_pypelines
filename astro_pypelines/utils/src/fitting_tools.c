@@ -39,7 +39,7 @@ int elliptical_moffat_fitter(int array_len, int nbr_params, double *params,
         for(int j=0; j<width; j++){
             data_point = data[i*width + j];
             model_point = elliptical_moffat(x[j], y[i], params);
-            error[j*width + i] = data_point-model_point;
+            error[i*width + j] = data_point-model_point;
         };
     };
     
