@@ -433,6 +433,7 @@ def loadTile(id,params):
             raise core.AstropypError("Invalid scale sent to server")
         if len(tileData)>0:
             if params['filetype']=='png':
+                print('\n\nTesting\n\n\n\n')
                 #tile['colormap']['colorFunc']="GRAY"
                 import astro_pypelines.pypelines.fitsviewer.png
                 if not astro_pypelines.pypelines.fitsviewer.png.buildImageTileC(filename,tile['colormap']['dataMin'],tile['colormap']['dataMax'],

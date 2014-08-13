@@ -1,5 +1,6 @@
 from __future__ import division,print_function
 
+import sys
 import numpy as np
 import numpy.lib.recfunctions as rfn
 import scipy.ndimage.filters as filters
@@ -27,6 +28,17 @@ fit_dtypes={
         ('angle',float),
         ('height',float),
         ('floor',float)
+    ],
+    'fast':[
+        ('x',float),
+        ('y',float),
+        ('fwhm1',float),
+        ('fwhm2',float),
+        ('beta',float),
+        ('angle',float),
+        ('height',float),
+        ('floor',float),
+        ('status', float)
     ],
     'circular gaussian':[
         ('x',float),
@@ -399,6 +411,109 @@ def findStars(imgData,apertureType='radius',maxima_size=5,maxima_sigma=2,maxima_
     no_fit: numpy structured array
         x and y coordinates of sources that could not be fit
     """
+    from astro_pypelines.utils.fitting_tools import fit_elliptical_moffat
+    
+    # Estimate the background by assuming that the middle 80% of the pixels in the image are background
+    if threshold is None:
+        sorted_data=np.sort(imgData.flatten())
+        back_min_idx=int(sorted_data.size*0.1)
+        back_max_idx=int(sorted_data.size*0.9)
+        back_estimate=sorted_data[back_min_idx:back_max_idx]
+        back_mean=np.mean(back_estimate)
+        back_median=np.median(back_estimate)
+        back_std=np.std(back_estimate)
+        back_min=back_estimate[0]
+        back_max=back_estimate[-1]
+        threshold=max(abs(back_mean-back_min),abs(back_max-back_mean))
+        
+        info='\n'.join([
+            'Backround estimate minimum:'+str(back_min),
+            'Background estimate maximum:'+str(back_max),
+            'median:'+str(back_median),
+            'mean:'+str(back_mean),
+            'standard deviation'+str(back_std),
+            'threshold:'+str(threshold)
+        ])
+        
+        if id is None:
+            print(id)
+        else:
+            core.progress_log(info,id)
+    
+    # Find all the point sources and their approximate positions
+    sources=detectSources(imgData,threshold,apertureType,maxima_size,maxima_footprint,binStruct,maxima_sigma,saturate,margin)
+    srcIndices=np.where(sources)
+    if id is None:
+        print('Number of stars:',srcIndices[0].size)
+    else:
+        core.progress_log('Number of stars: '+str(srcIndices[0].size),id)
+    
+    # Fit the sources to a valid fit method. 
+    if fit_method not in fit_types.keys():
+        raise core.AstropypError("Invalid fit method, please choose from '"+"','".join(fit_types))
+    
+    import time
+    t1 = time.time()
+    best_fits = fit_elliptical_moffat(imgData.astype('float64'), 
+                    srcIndices[1].astype('int32'), 
+                    srcIndices[0].astype('int32'), 
+                    aperture_radii[0],threshold)
+    best_fits=best_fits.view(dtype=fit_dtypes['fast'])
+    no_fit=[]
+    t2=time.time()
+    print('fit {0} objects in {1}s'.format(len(best_fits), t2-t1))
+    
+    return [best_fits,no_fit]
+
+def findStars_old(imgData,apertureType='radius',maxima_size=5,maxima_sigma=2,maxima_footprint=None,aperture_radii=[],threshold=None,
+                saturate=None,margin=None,binStruct=None,fit_method='elliptical moffat',id=None):
+    """
+    Detect possible sources in an image and attempt to fit them to a specified profile.
+    
+    Parameters
+    ----------
+    imgData: 2D numpy array
+        Image data
+    apertureType: string
+        Type of aperture to use when searching for local maxima. The options are:
+            'width': square with width specified by maxima_size
+            'radius': circule with radius specified by maxima_size
+            'footprint': binary structure with 1's representing 
+    maxima_size: int,optional
+        Either width of the area or the radius of a circle in which to search for a maximum (for each point)
+    maxima_footprint: numpy 2D array (dtype=boolean),optional
+        Instead of supplying a size, a footprint can be given of a different shape to use for finding a footprint
+            example:
+                footprint=np.array([
+                    [0,0,1,0,0],
+                    [0,1,1,1,0],
+                    [1,1,1,1,1],
+                    [0,1,1,1,0],
+                    [0,0,1,0,0]
+                ])
+            The above example would only seach for a maximum in the pixels labeled by 1 in the region
+            centered on a given pixel
+    aperture_radii: list,optional
+        List of radii to use to fit the source. In general this should be 5 times the fwhm of the source.
+    threshold: float,optional
+        Minimum pixel value above the background noise
+    saturate: float, optional
+        Value at which CCD's for the detector become saturated and are no longer linear
+    margin: int, optional
+        Sources close to the edges can be cut off to prevent partial data from becoming mixed up with good detections
+    binStruct: 2d numpy array, optional
+        Minimum structure that regions of the image are shrunk down to in order to isolate maxima
+    fit_method: str
+        Type of fit to use to get centroid positions and approximate photometric parameters.
+        This step can be skipped by choosing fit_method='no fit'.
+    
+    Returns
+    -------
+    best_fits: numpy structured array
+        Structured array based on the fit method chosen (given by the fit_dtypes dict).
+    no_fit: numpy structured array
+        x and y coordinates of sources that could not be fit
+    """
     
     # Estimate the background by assuming that the middle 80% of the pixels in the image are background
     if threshold is None:
@@ -439,6 +554,7 @@ def findStars(imgData,apertureType='radius',maxima_size=5,maxima_sigma=2,maxima_
     if fit_method not in fit_types.keys():
         raise core.AstropypError("Invalid fit method, please choose from '"+"','".join(fit_types))
     best_fits=np.array([],dtype=fit_dtypes[fit_method])
+    
     if fit_method!='no fit':
         if id is None:
             print('Fitting points')
@@ -471,5 +587,6 @@ def findStars(imgData,apertureType='radius',maxima_size=5,maxima_sigma=2,maxima_
         best_fits['x']=srcIndices[1]
         best_fits['y']=srcIndices[0]
         no_fit=np.array([],dtype=fit_dtypes['no fit'])
+    
     
     return [best_fits,no_fit]

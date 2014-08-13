@@ -1,4 +1,4 @@
-// Header for Astro Pypeline
+// Header for Astro Pypeline Fitsviewer
 // 2014 by Fred Moolekamp
 
 #ifndef ASTROPYPELINE_H

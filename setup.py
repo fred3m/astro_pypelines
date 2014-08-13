@@ -109,6 +109,8 @@ for pyp_dir in pypeline_dirs:
                 templates.append(os.path.join(root,filename))
         data_files.append((root, templates))
 
+import numpy as np
+
 setup(name=PACKAGENAME,
       version=VERSION,
       description=DESCRIPTION,
@@ -125,5 +127,6 @@ setup(name=PACKAGENAME,
       zip_safe=False,
       use_2to3=True,
       data_files=data_files,
+      include_dirs=[np.get_include()],
       **package_info
 )
