@@ -458,7 +458,7 @@ def findStars(imgData,apertureType='radius',maxima_size=5,maxima_sigma=2,maxima_
                     srcIndices[1].astype('int32'), 
                     srcIndices[0].astype('int32'), 
                     aperture_radii[0],threshold)
-    best_fits=best_fits.view(dtype=fit_dtypes['fast'])
+    best_fits=best_fits.ravel().view(dtype=fit_dtypes['fast'])
     no_fit=[]
     t2=time.time()
     print('fit {0} objects in {1}s'.format(len(best_fits), t2-t1))
