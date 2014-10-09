@@ -2,7 +2,7 @@ from __future__ import division,print_function
 import os
 import hashlib
 import astropyp.utils.core as core
-
+import astropy.io.fits as pyfits
 
 openFits={} # fits files open by current users
 openHDUs={} # hdu's (image fits frames) open by current users
@@ -69,7 +69,7 @@ def getHDUlist(id,params):
         print("Could not find",params['fileId'],"loading fits file")
         response=loadFitsFile(id,params)
         core.respond(id, response)
-        return openFits[response['fileId']]
+        return openFits[params['fileId']]
 
 def getTileId(tile):
     """
@@ -114,3 +114,57 @@ def getTileId(tile):
         str(tile['colormap'])
     ])
     return hashlib.md5(tileId).hexdigest()
+
+def loadFitsFile(id,params):
+    """
+    loadFitsFile
+    
+    Load a fits file on the server. The function first checks to see if the file has already been loaded into memory,
+    if it hasn't it uses astropy.io.fits (pyfits) to load the file into memory. It then sends a response to the client
+    that contains the properties of the fits file along with the number of image frames contained in the file.
+    
+    Parameters
+    ----------
+    id: dictionary
+        - dictionary that contains the following keys:
+            userId: string
+                - Unique identifier of the current user
+            sessionId: string
+                -Unique identifier of the current session
+            requestId: string
+                -Unique identifier for the current request sent by the client
+    params: dictionary
+        - Must contain either 'fileId' key or 'path' and 'filename' keys used to open the fits file
+    
+    Returns
+    -------
+    response: dictionary
+        - The response is always a dictionary that contains an id field (in this case 'fits file') that identifies
+        the type of response the client is receiving.
+        
+        - Other keys:
+            properties: dictionary
+                - Properties of the fits file. This includes all of the parameters sent to the function in params
+                as well as any quantities calculated in the function
+    """
+    if 'fileId' not in params:
+        params['fileId']=getFileId(params)
+    try:
+        hdulist=openFits[params['fileId']]
+    except KeyError:
+        hdulist=pyfits.open(os.path.join(params['path'],params['filename']))
+        properties=params
+        properties['imageHDUlist']=[]
+        for n,hdu in enumerate(hdulist):
+            if (isinstance(hdu, pyfits.hdu.image.ImageHDU) or 
+                    isinstance(hdu, pyfits.hdu.compressed.CompImageHDU) or
+                    len(hdulist)==1):
+                properties['imageHDUlist'].append(n)
+        properties['frames']=len(properties['imageHDUlist'])
+        hdulist.properties=properties
+        openFits[params['fileId']]=hdulist
+    response={
+        'id':"fits file",
+        'properties':hdulist.properties
+    }
+    return response

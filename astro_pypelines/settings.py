@@ -11,8 +11,8 @@ pypeline_handlers = [
         'template_name': 'fitsviewer.html',
         'template_path': [pypeline_dir, 'fitsviewer', 'templates']
     }),
-    (r"/color-mag", BaseHandler, {
-        'template_name': 'color-mag.html',
+    (r"/colormag", BaseHandler, {
+        'template_name': 'colormag.html',
         'template_path': [pypeline_dir, 'photometry', 'templates']
     }),
     (r"/template", BaseHandler, {

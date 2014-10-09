@@ -395,13 +395,13 @@ def loadTile(id,params):
     pngName=os.path.join(path,tile['tileId']+".png")
     filename=os.path.join(core.ROOT_DIR,pngName)
     tile['pngName']=pngName
-    if (
-        params['x']<0 or params['y']<0 or 
-        params['x']>hdu.properties['width'] or params['y']>hdu.properties['height']
-    ):
-        raise core.AstropypError("Tile at ("+str(params['x'])+","+str(params['y'])+") is not located in the image")
-    xmin=params['x']
-    ymin=params['y']
+    #if (
+    #    params['x']<0 or params['y']<0 or 
+    #    params['x']>hdu.properties['width'] or params['y']>hdu.properties['height']
+    #):
+    #    raise core.AstropypError("Tile at ("+str(params['x'])+","+str(params['y'])+") is not located in the image")
+    xmin=max(params['x'],0)
+    ymin=max(params['y'], 0)
     if params['scale']>1:
         params['scale']=math.floor(params['scale'])
     tile['tile_width']=min(int((hdu.properties['width']-xmin-1)*params['scale']),params['tile_width'])
@@ -433,7 +433,6 @@ def loadTile(id,params):
             raise core.AstropypError("Invalid scale sent to server")
         if len(tileData)>0:
             if params['filetype']=='png':
-                print('\n\nTesting\n\n\n\n')
                 #tile['colormap']['colorFunc']="GRAY"
                 import astro_pypelines.pypelines.fitsviewer.png
                 if not astro_pypelines.pypelines.fitsviewer.png.buildImageTileC(filename,tile['colormap']['dataMin'],tile['colormap']['dataMax'],
