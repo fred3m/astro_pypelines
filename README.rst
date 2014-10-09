@@ -16,3 +16,15 @@ To use any of these pypelines `Astropyp`_ must be installed
 
 .. _Astropy: http://www.astropy.org/
 .. _Astropyp: https://github.com/fred3m/astropyp
+
+------------
+Special Note
+------------
+I am currently in the process of recreating and renaming astropyp and astro_pypelines. I advise waiting until
+this process is completed before installing either astropyp or astro_pypelines on your computer. Within the next month
+or two these repositories will be updated to emphisize that what is now astropyp will be a much more generic server- 
+side data analysis package and it will be easier to create and modify pypelines in a way that doesn't require
+root access.
+
+Sorry for this change, but hardly anyone is using this package yet so I figured this would be a good time to
+make significant upgrades.
